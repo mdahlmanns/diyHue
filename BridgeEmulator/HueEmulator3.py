@@ -49,6 +49,7 @@ ap.add_argument("--http-port", help="The port to listen on for HTTP (Docker)", t
 ap.add_argument("--mac", help="The MAC address of the host system (Docker)", type=str)
 ap.add_argument("--no-serve-https", action='store_true', help="Don't listen on port 443 with SSL")
 ap.add_argument("--ip-range", help="Set IP range for light discovery. Format: <START_IP>,<STOP_IP>", type=str)
+ap.add_argument("--subnet", help="Set subnet for light discovery. Format: X.X.X.X", type=str)
 ap.add_argument("--scan-on-host-ip", action='store_true', help="Scan the local IP address when discovering new lights")
 ap.add_argument("--deconz", help="Provide the IP address of your Deconz host. 127.0.0.1 by default.", type=str)
 ap.add_argument("--no-link-button", action='store_true', help="DANGEROUS! Don't require the link button to be pressed to pair the Hue app, just allow any app to connect")
@@ -115,6 +116,14 @@ elif os.getenv('MAC'):
     print("Host MAC given as " + mac)
 else:
     docker = False
+
+if args.subnet:
+    subnet = args.subnet
+elif os.getenv('SUBNET'):
+    subnet = os.getenv('SUBNET')
+else:
+    subnet = getIpAddress()
+logging.info("Subnet for light discovery: "+subnet)
 
 if args.ip_range:
     ranges = args.ip_range.split(',')
@@ -685,7 +694,7 @@ def scanHost(host, port):
     return result
 
 def iter_ips(port):
-    host = HOST_IP.split('.')
+    host = subnet.split('.')
     if args.scan_on_host_ip:
         yield ('127.0.0.1', port)
         return
