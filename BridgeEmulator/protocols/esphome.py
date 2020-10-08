@@ -137,7 +137,6 @@ def discover(bridge_config, new_lights):
                     bridge_config["lights"][new_light_id]["uniqueid"] = mac
                     if modelid == "LCT015":
                         bridge_config["lights"][new_light_id]["capabilities"] = light_types[modelid]["capabilities"]
-                        bridge_config["lights"][new_light_id]["streaming"] = light_types[modelid]["streaming"]
                     #new_lights.update({new_light_id: {"name": light_name}})
                     bridge_config["lights_address"][new_light_id] = {}
                     bridge_config["lights_address"][new_light_id]["ip"] = properties["ip"]
